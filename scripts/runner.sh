@@ -1,0 +1,1 @@
+docker run -d --name instance${1} -p 300${1}:3000 --net mynet --ip 119.18.0.${1} -e MYSQL_ROOT_PASSWORD=a bdimg

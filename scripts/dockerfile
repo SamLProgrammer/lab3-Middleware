@@ -1,0 +1,22 @@
+#construye la imagen para crear los contenedores de las instancias
+FROM mysql:5.6
+
+ENV TZ=America/Bogota
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt update
+RUN apt-get update -y
+
+RUN apt-get install -y git
+RUN apt install curl -y
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt install nodejs -y
+RUN apt-get install npm -y
+RUN apt-get install nano -y
+
+RUN mkdir lab3
+WORKDIR /home/lab3
+COPY trick2.sh /home/trick2.sh
+RUN chmod +x /home/trick2.sh
+
+ENTRYPOINT ["sh", "/home/trick2.sh"]

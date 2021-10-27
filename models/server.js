@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const {send, monitorRequest} = require("../controllers/monitor")
+const { send, getInstances, isMonitoring } = require("../controllers/monitor")
+const data = require('../data/MonitoringObject');
 const axios = require("axios");
 const PORT = 8000;
 
@@ -13,7 +14,6 @@ class Server {
     this.middleware();
     this.routes();
     this.sockets();
-    this.monitor();
   }
 
   middleware() {
@@ -30,8 +30,9 @@ class Server {
     this.io.on("connection", (socket) => {
       console.log("Client connect!");
       setInterval(() => {
-        this.io.emit('message', {ram: send(), cpu: send()})
-        console.log('aja')
+        if (isMonitoring()) {
+          this.io.emit('message', getInstances())
+        }
       }, 5000)
     });
   }
@@ -40,12 +41,6 @@ class Server {
     this.server.listen(this.port, () => {
       console.log(`Server on ! PORT ${this.port}`);
     });
-  }
-
-  monitor() {
-    setInterval(() => {
-      monitorRequest();
-    }, 5000);
   }
 }
 
